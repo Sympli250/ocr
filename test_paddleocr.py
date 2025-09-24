@@ -1,62 +1,45 @@
-#!/usr/bin/env python3
-"""
-Test des paramètres PaddleOCR pour diagnostiquer les problèmes
-"""
+"""Tests unitaires pour la configuration PaddleOCR."""
+
+from __future__ import annotations
+
+import importlib
 import sys
-from rich.console import Console
-from rich.panel import Panel
-from rich.text import Text
-from rich import print as rprint
+import types
+from typing import Iterator
 
-console = Console()
+import pytest
 
-def test_paddleocr_params():
-    """Test des paramètres PaddleOCR supportés"""
-    try:
-        from paddleocr import PaddleOCR
-        console.print("[green]✅ Import PaddleOCR réussi[/green]")
-    except ImportError as e:
-        console.print(f"[red]❌ Import PaddleOCR échoué: {e}[/red]")
-        return False
 
-    # Test config minimale
-    console.print("\n[blue]🧪 Test config minimale...[/blue]")
-    try:
-        with console.status("[bold green]Initialisation..."):
-            ocr = PaddleOCR(use_angle_cls=True, lang="fr", show_log=False)
-        console.print("[green]✅ Config minimale OK[/green]")
-        return True
-    except Exception as e:
-        console.print(f"[red]❌ Config minimale échouée: {e}[/red]")
+class _TrackingPaddleOCR:
+    """Capture les paramètres passés au constructeur."""
 
-    # Test encore plus minimal
-    console.print("\n[blue]🧪 Test ultra-minimal...[/blue]")
-    try:
-        with console.status("[bold yellow]Initialisation ultra-minimale..."):
-            ocr = PaddleOCR(lang="fr")
-        console.print("[green]✅ Config ultra-minimale OK[/green]")
-        return True
-    except Exception as e:
-        console.print(f"[red]❌ Config ultra-minimale échouée: {e}[/red]")
-        return False
+    def __init__(self, **kwargs) -> None:
+        self.kwargs = kwargs
 
-if __name__ == "__main__":
-    # Bannière de diagnostic
-    banner = Text()
-    banner.append("🔍 DIAGNOSTIC PADDLEOCR\n", style="bold cyan")
-    banner.append("Test des configurations supportées", style="italic blue")
+    def ocr(self, *args, **kwargs):  # pragma: no cover - non utilisé ici
+        raise NotImplementedError
 
-    panel = Panel(
-        banner,
-        border_style="bright_cyan",
-        padding=(1, 2)
-    )
-    console.print(panel)
 
-    success = test_paddleocr_params()
+@pytest.fixture()
+def app_module(monkeypatch: pytest.MonkeyPatch) -> Iterator[types.ModuleType]:
+    """Charge le module `app` avec une implémentation simulée de PaddleOCR."""
 
-    if success:
-        console.print("\n[bold green]🎉 PaddleOCR fonctionne correctement![/bold green]")
-    else:
-        console.print("\n[bold red]❌ Problème avec PaddleOCR[/bold red]")
-        sys.exit(1)
+    fake_paddleocr = types.ModuleType("paddleocr")
+    fake_paddleocr.PaddleOCR = _TrackingPaddleOCR
+    fake_paddleocr.__version__ = "test"
+    monkeypatch.setitem(sys.modules, "paddleocr", fake_paddleocr)
+
+    module = importlib.import_module("app")
+    module = importlib.reload(module)
+    yield module
+
+    monkeypatch.delitem(sys.modules, "paddleocr", raising=False)
+    sys.modules.pop("app", None)
+
+
+def test_get_ocr_engine_uses_profile_configuration(app_module: types.ModuleType) -> None:
+    engine = app_module.get_ocr_engine("printed")
+
+    assert isinstance(engine, _TrackingPaddleOCR)
+    assert engine.kwargs["lang"] == "fr"
+    assert engine.kwargs["use_angle_cls"] is True
