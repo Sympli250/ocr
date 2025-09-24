@@ -24,6 +24,7 @@ from pydantic import BaseModel, Field, validator
 from enum import Enum
 import sys
 import traceback
+import imghdr
 
 # Configuration du logging détaillé
 class DetailedFormatter(logging.Formatter):
@@ -211,9 +212,32 @@ def temporary_file(suffix: str = ".png"):
 
 def validate_file(file: UploadFile, file_bytes: Optional[bytes] = None) -> None:
     """Valide le fichier uploadé"""
-    # Vérification du type MIME
-    mime_type, _ = mimetypes.guess_type(file.filename)
-    if mime_type not in ALLOWED_MIME_TYPES:
+    # Vérification du type MIME avec différentes sources
+    guessed_mime, _ = mimetypes.guess_type(file.filename or "")
+    candidate_mime_types = set(filter(None, [guessed_mime]))
+
+    content_type = getattr(file, "content_type", None)
+    if content_type:
+        candidate_mime_types.add(content_type)
+
+    if file_bytes is not None:
+        if file_bytes.startswith(b"%PDF-"):
+            candidate_mime_types.add("application/pdf")
+        else:
+            detected_image_format = imghdr.what(None, h=file_bytes)
+            image_mime_map = {
+                "jpeg": "image/jpeg",
+                "png": "image/png",
+                "tiff": "image/tiff",
+                "bmp": "image/bmp",
+                "webp": "image/webp",
+            }
+            if detected_image_format:
+                mapped_mime = image_mime_map.get(detected_image_format)
+                if mapped_mime:
+                    candidate_mime_types.add(mapped_mime)
+
+    if not candidate_mime_types.intersection(ALLOWED_MIME_TYPES):
         raise HTTPException(
             status_code=400,
             detail=f"Type de fichier non supporté. Types autorisés: {', '.join(ALLOWED_MIME_TYPES)}"
