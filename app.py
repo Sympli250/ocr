@@ -117,12 +117,12 @@ executor = ThreadPoolExecutor(max_workers=4)
 
 # Configuration des profils OCR - compatibilité PaddleOCR v3.2.0+
 OCR_PROFILE_CONFIGS = {
-    "printed": {"use_angle_cls": True, "lang": "fr"},
-    "handwriting": {"use_angle_cls": True, "lang": "fr", "det_db_thresh": 0.2},
-    "legal": {"use_angle_cls": True, "lang": "fr", "det_db_thresh": 0.3},
-    "scanned": {"use_angle_cls": True, "lang": "fr", "det_db_box_thresh": 0.5},
-    "english": {"use_angle_cls": True, "lang": "en"},
-    "multilang": {"use_angle_cls": True, "lang": "fr"}
+    "printed": {"use_angle_cls": True, "lang": "fr", "show_log": False},
+    "handwriting": {"use_angle_cls": True, "lang": "fr", "det_db_thresh": 0.2, "show_log": False},
+    "legal": {"use_angle_cls": True, "lang": "fr", "det_db_thresh": 0.3, "show_log": False},
+    "scanned": {"use_angle_cls": True, "lang": "fr", "det_db_box_thresh": 0.5, "show_log": False},
+    "english": {"use_angle_cls": True, "lang": "en", "show_log": False},
+    "multilang": {"use_angle_cls": True, "lang": "fr", "show_log": False}
 }
 
 # Cache des moteurs OCR initialisés
@@ -182,7 +182,11 @@ def get_ocr_engine(profile: str) -> PaddleOCR:
 
             # UN SEUL fallback: Configuration ultra-minimale
             try:
-                minimal_config = {"lang": config.get("lang", "fr")}
+                minimal_config = {
+                    "lang": config.get("lang", "fr"),
+                    "use_angle_cls": config.get("use_angle_cls", False),
+                    "show_log": False,
+                }
                 from paddleocr import PaddleOCR
                 ocr_engines_cache[profile] = PaddleOCR(**minimal_config)
                 logger.warning(f"Fallback réussi pour '{profile}' avec config ultra-minimale")
@@ -340,8 +344,9 @@ def process_single_page(args) -> Dict:
 
         # Sauvegarde temporaire pour OCR
         with temporary_file(".png") as temp_file:
-            img.save(temp_file.name, format='PNG', optimize=True)
-            ocr_result = ocr_engine.ocr(temp_file.name, cls=True)
+            img.save(temp_file.name, format='PNG')
+            use_cls = getattr(ocr_engine, "use_angle_cls", False)
+            ocr_result = ocr_engine.ocr(temp_file.name, cls=use_cls)
 
         # Traitement des résultats OCR avec vérifications robustes
         page_lines = []
