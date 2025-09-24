@@ -8,6 +8,7 @@ import pytest
 from fastapi import HTTPException
 from pdf2image.exceptions import PDFInfoNotInstalledError
 from PIL import Image
+from starlette.datastructures import Headers, UploadFile
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
@@ -70,3 +71,14 @@ def test_pdf_conversion_fallback_to_image(app_module, monkeypatch):
 
     assert len(images) == 1
     assert isinstance(images[0], Image.Image)
+
+
+def test_validate_file_accepts_pdf_without_extension(app_module):
+    pdf_bytes = b"%PDF-1.4 minimal"
+    headers = Headers({"content-type": "application/pdf"})
+    upload = UploadFile(filename="document", file=io.BytesIO(pdf_bytes), headers=headers)
+
+    try:
+        app_module.validate_file(upload, pdf_bytes)
+    except HTTPException as exc:
+        pytest.fail(f"validate_file should accept valid PDF without extension: {exc}")
