@@ -514,7 +514,7 @@ async def ocr_document(
             return ocr_response
 
         elif output_format == OutputFormat.HTML:
-            html = f"""<html>
+            html_content = f"""<html>
             <head>
                 <meta charset="utf-8">
                 <title>Résultat OCR - {file.filename}</title>
@@ -537,19 +537,19 @@ async def ocr_document(
                 </div>"""
 
             for page in results:
-                html += f'<div class="page"><h2>Page {page["page"]}</h2>'
+                html_content += f'<div class="page"><h2>Page {page["page"]}</h2>'
                 if page.get("status") == "error":
-                    html += f'<p style="color: red;">Erreur: {page.get("error", "Inconnue")}</p>'
+                    html_content += f'<p style="color: red;">Erreur: {page.get("error", "Inconnue")}</p>'
                 else:
                     for line in page["lines"]:
                         confidence = line.get("confidence", 0)
                         escaped_text = html.escape(line["text"])
-                        html += f'<div class="line">{escaped_text} '
-                        html += f'<span class="confidence">(confiance: {confidence:.2f})</span></div>'
-                html += '</div>'
+                        html_content += f'<div class="line">{escaped_text} '
+                        html_content += f'<span class="confidence">(confiance: {confidence:.2f})</span></div>'
+                html_content += '</div>'
 
-            html += "</body></html>"
-            return HTMLResponse(content=html)
+            html_content += "</body></html>"
+            return HTMLResponse(content=html_content)
 
         else:  # format text
             text_output = f"=== Résultat OCR - {file.filename} ===\n"
