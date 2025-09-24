@@ -344,8 +344,10 @@ def process_single_page(args) -> Dict:
 
         # Sauvegarde temporaire pour OCR
         with temporary_file(".png") as temp_file:
-            # Ne pas utiliser optimize=True : Pillow ne le supporte pas pour le format PNG
-            img.save(temp_file.name, format="PNG")
+            img.save(
+                temp_file.name,
+                format="PNG",  # optimize=True n'est pas supporté pour PNG
+            )
             use_cls = getattr(ocr_engine, "use_angle_cls", False)
             ocr_result = ocr_engine.ocr(temp_file.name, cls=use_cls)
 
