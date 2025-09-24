@@ -155,6 +155,10 @@ Le script `test_api.py` effectue :
 - ✅ Tests de performance
 - ✅ Validation de l'API complète
 
+### Gestion des dépendances PDF
+
+- ⚠️ Un PDF valide envoyé sans dépendances système (ex: **Poppler** manquant) renvoie désormais une erreur serveur explicite `503` indiquant un problème de conversion côté serveur.
+
 ## 📝 Changements Techniques
 
 ### Avant (Bugs)

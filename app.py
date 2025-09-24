@@ -3,6 +3,11 @@ from fastapi.responses import JSONResponse, HTMLResponse, PlainTextResponse
 from fastapi.middleware.cors import CORSMiddleware
 from paddleocr import PaddleOCR
 from pdf2image import convert_from_bytes
+from pdf2image.exceptions import (
+    PDFInfoNotInstalledError,
+    PDFPageCountError,
+    PDFSyntaxError,
+)
 from PIL import Image, ImageEnhance, ImageFilter
 import tempfile
 import os
@@ -263,6 +268,18 @@ def convert_bytes_to_images(file_bytes: bytes) -> List[Image.Image]:
         # Tentative de conversion PDF avec pdf2image
         images = convert_from_bytes(file_bytes, dpi=200, fmt='PNG')
         logger.info(f"PDF converti en {len(images)} page(s)")
+    except (PDFInfoNotInstalledError, PDFPageCountError, PDFSyntaxError) as pdf_dependency_error:
+        logger.error(
+            "Échec critique conversion PDF: %s. Dépendances manquantes ou PDF invalide.",
+            pdf_dependency_error,
+        )
+        raise HTTPException(
+            status_code=503,
+            detail=(
+                "Conversion PDF impossible côté serveur. "
+                "Vérifiez l'installation des dépendances (ex: poppler)."
+            ),
+        ) from pdf_dependency_error
     except Exception as pdf_error:
         logger.info(f"Échec conversion PDF: {pdf_error}. Tentative image directe.")
         try:
