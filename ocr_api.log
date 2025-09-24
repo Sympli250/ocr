@@ -1,0 +1,56 @@
+2025-09-24 12:05:48,100 - app - INFO - startup_event:505 - 🚀 Démarrage Symplissime OCR API v1.1.0
+2025-09-24 12:05:48,102 - app - INFO - startup_event:506 - 📊 Profils OCR disponibles: ['printed', 'handwriting', 'legal', 'scanned', 'english', 'multilang']
+2025-09-24 12:07:54,397 - app - INFO - startup_event:505 - 🚀 Démarrage Symplissime OCR API v1.1.0
+2025-09-24 12:07:54,398 - app - INFO - startup_event:506 - 📊 Profils OCR disponibles: ['printed', 'handwriting', 'legal', 'scanned', 'english', 'multilang']
+2025-09-24 20:52:33,387 - app - INFO - startup_event:505 - 🚀 Démarrage Symplissime OCR API v1.1.0
+2025-09-24 20:52:33,388 - app - INFO - startup_event:506 - 📊 Profils OCR disponibles: ['printed', 'handwriting', 'legal', 'scanned', 'english', 'multilang']
+2025-09-24 20:53:34,783 - app - INFO - ocr_document:391 - [93a97e8d] Début traitement OCR - Fichier: 3.pdf, Profil: printed
+2025-09-24 20:53:34,784 - app - INFO - get_ocr_engine:152 - Initialisation du moteur OCR pour le profil: printed
+2025-09-24 20:53:34,784 - app - INFO - check_paddleocr_compatibility:132 - Version PaddleOCR détectée: 3.2.0
+2025-09-24 20:53:34,784 - app - ERROR - check_paddleocr_compatibility:140 - Problème de compatibilité PaddleOCR: Unknown argument: show_log
+2025-09-24 20:53:34,784 - app - WARNING - get_ocr_engine:158 - Problème de compatibilité détecté, utilisation config minimale
+2025-09-24 20:53:34,785 - app - ERROR - get_ocr_engine:164 - Erreur initialisation OCR 'printed': Unknown argument: show_log
+2025-09-24 20:53:34,788 - app - ERROR - get_ocr_engine:165 - Stack trace: Traceback (most recent call last):
+  File "C:\SYMPLISSIMEOCR\app.py", line 161, in get_ocr_engine
+    ocr_engines_cache[profile] = PaddleOCR(**config)
+                                 ~~~~~~~~~^^^^^^^^^^
+  File "C:\Users\Ayi\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\paddleocr\_pipelines\ocr.py", line 163, in __init__
+    super().__init__(**base_params)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\Users\Ayi\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\paddleocr\_pipelines\base.py", line 63, in __init__
+    self._common_args = parse_common_args(
+                        ~~~~~~~~~~~~~~~~~^
+        common_args, default_enable_hpi=_DEFAULT_ENABLE_HPI
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\Ayi\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.13_qbz5n2kfra8p0\LocalCache\local-packages\Python313\site-packages\paddleocr\_common_args.py", line 43, in parse_common_args
+    raise ValueError(f"Unknown argument: {name}")
+ValueError: Unknown argument: show_log
+
+2025-09-24 20:53:34,789 - app - ERROR - get_ocr_engine:173 - Échec fallback pour 'printed': Unknown argument: show_log
+2025-09-24 21:20:03,707 - app - INFO - startup_event:538 - 🚀 Démarrage Symplissime OCR API v1.1.0
+2025-09-24 21:20:03,709 - app - INFO - startup_event:539 - 📊 Profils OCR disponibles: ['printed', 'handwriting', 'legal', 'scanned', 'english', 'multilang']
+2025-09-24 21:20:22,187 - app - INFO - ocr_document:424 - [6014dff4] Début traitement OCR - Fichier: 3-ORANGE.pdf, Profil: printed
+2025-09-24 21:20:22,189 - app - INFO - get_ocr_engine:156 - Initialisation du moteur OCR pour le profil: printed
+2025-09-24 21:20:22,206 - app - ERROR - get_ocr_engine:166 - PaddleOCR non installé: No module named 'paddle'
+2025-09-24 21:20:37,187 - app - INFO - ocr_document:424 - [8af8226a] Début traitement OCR - Fichier: 3-ORANGE.pdf, Profil: handwriting
+2025-09-24 21:20:37,188 - app - INFO - get_ocr_engine:156 - Initialisation du moteur OCR pour le profil: handwriting
+2025-09-24 21:20:37,195 - app - ERROR - get_ocr_engine:166 - PaddleOCR non installé: No module named 'paddle'
+2025-09-24 21:21:06,367 - app - INFO - ocr_document:424 - [3920460a] Début traitement OCR - Fichier: 3-ORANGE.pdf, Profil: english
+2025-09-24 21:21:06,367 - app - INFO - get_ocr_engine:156 - Initialisation du moteur OCR pour le profil: english
+2025-09-24 21:21:06,372 - app - ERROR - get_ocr_engine:166 - PaddleOCR non installé: No module named 'paddle'
+2025-09-24 21:30:31,991 - app - INFO - startup_event:538 - 🚀 Démarrage Symplissime OCR API v1.1.0
+2025-09-24 21:30:31,992 - app - INFO - startup_event:539 - 📊 Profils OCR disponibles: ['printed', 'handwriting', 'legal', 'scanned', 'english', 'multilang']
+2025-09-24 21:30:54,487 - app - INFO - ocr_document:424 - [f7528b03] Début traitement OCR - Fichier: 3-ORANGE.pdf, Profil: printed
+2025-09-24 21:30:54,489 - app - INFO - get_ocr_engine:156 - Initialisation du moteur OCR pour le profil: printed
+2025-09-24 21:31:04,004 - app - ERROR - convert_bytes_to_images:280 - Échec ouverture image: cannot identify image file 'C:\\Users\\Ayi\\AppData\\Local\\Temp\\tmpb1gvkwo4.png'
+2025-09-24 21:31:32,509 - app - ERROR - convert_bytes_to_images:280 - Échec ouverture image: cannot identify image file 'C:\\Users\\Ayi\\AppData\\Local\\Temp\\tmpslkvixwf.png'
+2025-09-24 21:32:31,602 - app - ERROR - convert_bytes_to_images:280 - Échec ouverture image: cannot identify image file 'C:\\Users\\Ayi\\AppData\\Local\\Temp\\tmp5xz7qz9g.png'
+2025-09-24 21:39:10,274 - app - INFO - startup_event:538 - 🚀 Démarrage Symplissime OCR API v1.1.0
+2025-09-24 21:39:10,275 - app - INFO - startup_event:539 - 📊 Profils OCR disponibles: ['printed', 'handwriting', 'legal', 'scanned', 'english', 'multilang']
+2025-09-24 21:50:20,665 - app - INFO - startup_event:538 - 🚀 Démarrage Symplissime OCR API v1.1.0
+2025-09-24 21:50:20,666 - app - INFO - startup_event:539 - 📊 Profils OCR disponibles: ['printed', 'handwriting', 'legal', 'scanned', 'english', 'multilang']
+2025-09-24 21:51:35,869 - app - INFO - ocr_document:424 - [e35665bf] Début traitement OCR - Fichier: 3-ORANGE.pdf, Profil: handwriting
+2025-09-24 21:51:35,869 - app - INFO - get_ocr_engine:157 - Initialisation du moteur OCR pour le profil: handwriting
+2025-09-24 21:51:43,866 - app - ERROR - convert_bytes_to_images:280 - Échec ouverture image: cannot identify image file <_io.BytesIO object at 0x00000000232B3C90>
